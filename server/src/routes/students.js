@@ -44,4 +44,22 @@ router.post('/:id/apply', async (req, res) => {
   res.json(result);
 });
 
+// Update student skills & profile from AI Resume Extractor or profile sync
+router.post('/:id/skills', async (req, res) => {
+  const { skills, profileUpdates } = req.body;
+  if (!skills || typeof skills !== 'object') {
+    return res.status(400).json({ error: 'skills object is required' });
+  }
+
+  const updatedStudent = await dbStore.setStudentSkills(req.params.id, skills, profileUpdates || {});
+  if (!updatedStudent) {
+    return res.status(404).json({ error: 'Student not found' });
+  }
+
+  res.json({
+    message: 'Student skills and profile successfully synced to database',
+    student: updatedStudent
+  });
+});
+
 export default router;

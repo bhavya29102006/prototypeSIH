@@ -90,6 +90,58 @@ class Store {
     };
   }
 
+    async setStudentSkills(id, newSkills, profileUpdates = {}) {
+    const student = await this.getStudent(id);
+    if (!student) return null;
+
+    const mergedSkills = { ...student.skills, ...newSkills };
+    const values = Object.values(mergedSkills);
+    const newReadiness = Math.round(values.reduce((a, b) => a + b, 0) / (values.length || 1));
+    const today = new Date().toISOString().split('T')[0];
+
+    const updates = {
+      skills: mergedSkills,
+      readiness_score: newReadiness,
+      readinessScore: newReadiness,
+      last_assessment_date: today,
+      lastAssessmentDate: today,
+      ...(profileUpdates.name ? { name: profileUpdates.name } : {}),
+      ...(profileUpdates.college ? { college: profileUpdates.college } : {}),
+      ...(profileUpdates.department ? { department: profileUpdates.department } : {}),
+      ...(profileUpdates.cgpa ? { cgpa: profileUpdates.cgpa } : {})
+    };
+
+    if (isSupabaseConfigured()) {
+      await supabaseDb.update('students', `id=eq.${id}`, {
+        skills: mergedSkills,
+        readiness_score: newReadiness,
+        last_assessment_date: today,
+        ...(profileUpdates.name ? { name: profileUpdates.name } : {}),
+        ...(profileUpdates.college ? { college: profileUpdates.college } : {}),
+        ...(profileUpdates.department ? { department: profileUpdates.department } : {}),
+        ...(profileUpdates.cgpa ? { cgpa: profileUpdates.cgpa } : {})
+      });
+    }
+
+    const db = this.read();
+    const idx = db.students.findIndex(s => s.id === id);
+    if (idx !== -1) {
+      db.students[idx] = { ...db.students[idx], ...updates };
+      const candIdx = db.candidates.findIndex(c => c.id === id);
+      if (candIdx !== -1) {
+        db.candidates[candIdx] = {
+          ...db.candidates[candIdx],
+          ...updates,
+          skills: mergedSkills,
+          readinessScore: newReadiness
+        };
+      }
+      this.write(db);
+    }
+
+    return { ...student, ...updates };
+  }
+
   async updateStudentSkills(id, skillBoosts) {
     const student = await this.getStudent(id);
     if (!student) return null;

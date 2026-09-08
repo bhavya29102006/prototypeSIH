@@ -97,8 +97,34 @@ const runTests = async () => {
     if (typeof data.placementReadinessIndex !== 'number') throw new Error('Missing readiness index');
   });
 
+  // Test 8: Sync Extracted Skills from AI Resume Extractor (POST)
+  await test('POST /api/students/std-2024-8821/skills (Resume NLP Skills & Profile Sync)', async () => {
+    const res = await fetch(`${BASE_URL}/students/std-2024-8821/skills`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        skills: {
+          'JavaScript / TypeScript': 90,
+          'React.js': 88,
+          'Python': 82
+        },
+        profileUpdates: {
+          name: 'Bhavya Gupta',
+          cgpa: 8.8
+        }
+      })
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.student || data.student.skills['React.js'] !== 88) throw new Error('Skills failed to sync');
+  });
+
   console.log(`\nTests finished: ${passed}/${total} passed`);
-  if (passed < total) process.exit(1);
+  if (passed === total) {
+    process.exit(0);
+  } else {
+    process.exit(1);
+  }
 };
 
 runTests().catch(err => console.error('Test script error:', err));

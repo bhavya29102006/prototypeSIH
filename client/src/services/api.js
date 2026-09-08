@@ -21,6 +21,16 @@ export const api = {
     return await res.json();
   },
 
+  async updateStudentSkills(id = 'std-2024-8821', skills, profileUpdates = {}) {
+    const res = await fetch(`${BASE_URL}/students/${id}/skills`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ skills, profileUpdates })
+    });
+    if (!res.ok) throw new Error('Failed to save skills to database');
+    return await res.json();
+  },
+
   async submitQuiz(id = 'std-2024-8821', skillBoosts) {
     const res = await fetch(`${BASE_URL}/students/${id}/quiz`, {
       method: 'POST',

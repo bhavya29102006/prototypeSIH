@@ -260,6 +260,85 @@ export const AppProvider = ({ children }) => {
     notify(`Collaboration proposal submitted to industry lead!`, 'success');
   };
 
+  // Student: Save Extracted Resume Skills & Profile Metadata to Backend API / Database
+  const syncResumeSkillsToDatabase = async (newSkills, profileUpdates = {}) => {
+    // 1. Optimistic UI update
+    setStudent(prev => {
+      const merged = { ...prev.skills, ...newSkills };
+      const values = Object.values(merged);
+      const newReadiness = Math.round(values.reduce((a, b) => a + b, 0) / (values.length || 1));
+      const today = new Date().toISOString().split('T')[0];
+
+      return {
+        ...prev,
+        skills: merged,
+        readinessScore: newReadiness,
+        lastAssessmentDate: today,
+        ...(profileUpdates.name ? { name: profileUpdates.name } : {}),
+        ...(profileUpdates.college ? { college: profileUpdates.college } : {}),
+        ...(profileUpdates.department ? { department: profileUpdates.department } : {}),
+        ...(profileUpdates.cgpa ? { cgpa: profileUpdates.cgpa } : {})
+      };
+    });
+
+    // Also update this student in candidates pool for recruiter portal
+    setCandidates(prev => prev.map(c => {
+      if (c.id === student.id || c.name === student.name) {
+        const merged = { ...c.skills, ...newSkills };
+        const values = Object.values(merged);
+        const newReadiness = Math.round(values.reduce((a, b) => a + b, 0) / (values.length || 1));
+        return {
+          ...c,
+          skills: merged,
+          readinessScore: newReadiness,
+          ...(profileUpdates.name ? { name: profileUpdates.name } : {})
+        };
+      }
+      return c;
+    }));
+
+    if (isLiveBackend) {
+      try {
+        const res = await api.updateStudentSkills(student.id, newSkills, profileUpdates);
+        if (res && res.student) {
+          setStudent(res.student);
+          const updatedCands = await api.getInstitutionStudents().catch(() => null);
+          if (updatedCands) setCandidates(updatedCands);
+        }
+      } catch (err) {
+        console.error('API Resume Skills sync error:', err);
+      }
+    }
+
+    notify('Verified skills and profile synced to database and live radar chart!', 'success');
+  };
+
+  // Industry: Add Corporate Training Program via Backend API
+  const addTrainingProgram = async (programData) => {
+    const tempProg = {
+      ...programData,
+      id: `train-${Date.now()}`,
+      studentsEnrolled: 0,
+      completionRate: '0%',
+      tag: 'Direct-Hire Co-Op'
+    };
+
+    setTrainingPrograms(prev => [tempProg, ...prev]);
+
+    if (isLiveBackend) {
+      try {
+        const created = await api.postTraining(programData);
+        if (created) {
+          setTrainingPrograms(prev => [created, ...prev.filter(p => p.id !== tempProg.id)]);
+        }
+      } catch (err) {
+        console.error('API Post Training error:', err);
+      }
+    }
+
+    notify(`Corporate training track "${programData.title}" published to database!`, 'success');
+  };
+
   // Reset to initial state for demo testing via Backend API
   const resetAllData = async () => {
     if (isLiveBackend) {

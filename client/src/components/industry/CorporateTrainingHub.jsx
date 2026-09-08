@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 export const CorporateTrainingHub = () => {
-  const { trainingPrograms, notify } = useApp();
+  const { trainingPrograms, addTrainingProgram, notify } = useApp();
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Quick state for posting a new program
