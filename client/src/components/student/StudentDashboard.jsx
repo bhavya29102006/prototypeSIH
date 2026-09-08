@@ -4,6 +4,7 @@ import { SkillGapAnalyzer } from './SkillGapAnalyzer';
 import { SkillQuiz } from './SkillQuiz';
 import { VerifiedPortfolio } from './VerifiedPortfolio';
 import { StudentJobs } from './StudentJobs';
+import { ResumeSkillExtractor } from './ResumeSkillExtractor';
 import {
   Compass,
   FileBadge,
@@ -129,6 +130,10 @@ export const StudentDashboard = () => {
 
       {activeTab === 'quiz' && (
         <SkillQuiz onFinished={() => setActiveTab('gap')} />
+      )}
+
+            {activeTab === 'resume' && (
+        <ResumeSkillExtractor onNavigateToRadar={() => setActiveTab('gap')} />
       )}
 
       {activeTab === 'portfolio' && (
