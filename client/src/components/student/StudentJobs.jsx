@@ -13,6 +13,42 @@ import {
   Filter
 } from 'lucide-react';
 
+// Explainable AI (XAI) Match Rationale Generator
+const getJobXAIExplanation = (studentSkills, reqSkills, matchScore) => {
+  const reqEntries = Object.entries(reqSkills || {});
+  if (reqEntries.length === 0) {
+    return "Matched on foundational software development and problem-solving benchmarks.";
+  }
+
+  const strongMatches = [];
+  const gaps = [];
+
+  for (const [skill, reqVal] of reqEntries) {
+    const studentVal = studentSkills[skill] || 0;
+    if (studentVal >= reqVal) {
+      strongMatches.push({ skill, surplus: studentVal - reqVal });
+    } else {
+      gaps.push({ skill, deficit: reqVal - studentVal, reqVal, studentVal });
+    }
+  }
+
+  strongMatches.sort((a, b) => b.surplus - a.surplus);
+  gaps.sort((a, b) => b.deficit - a.deficit);
+
+  if (matchScore >= 75) {
+    if (gaps.length === 0) {
+      return "Direct Top Fit: Your verified assessment scores exceed every single technical benchmark required for this role.";
+    }
+    const topMatchNames = strongMatches.slice(0, 2).map(m => m.skill).join(' & ');
+    return `Strong Match: Your verified proficiency in ${topMatchNames} meets or exceeds requirements. Bridging ${gaps[0].skill} by ${gaps[0].deficit}% will make your application top 5% competitive.`;
+  } else if (matchScore >= 50) {
+    const gapNames = gaps.slice(0, 2).map(g => `${g.skill} (-${g.deficit}%)`).join(', ');
+    return `Moderate Match: Strong foundational scores, but requires upskilling in: ${gapNames}. Consider taking the targeted skill bridge module.`;
+  } else {
+    return `Growth Role: Significant skill gaps identified in ${gaps.slice(0, 2).map(g => g.skill).join(' and ')}. Focus on foundational projects before applying.`;
+  }
+};
+
 export const StudentJobs = () => {
   const { student, jobs, applyToJob, calculateMatchScore, trainingPrograms } = useApp();
   const [filterType, setFilterType] = useState('all'); // 'all' | 'high_match' | 'internship'
@@ -214,7 +250,23 @@ export const StudentJobs = () => {
                 </div>
               </div>
 
-              {/* Action Bar */}
+              {/* Explainable AI (XAI) Match Rationale */}
+                <div className="bg-indigo-50/70 rounded-xl p-3.5 border border-indigo-100/90 text-xs space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 font-extrabold text-indigo-950">
+                      <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>AI Recommendation Rationale (XAI)</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-indigo-700 bg-indigo-100/80 px-2 py-0.5 rounded-md">
+                      Transparent Fit
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-indigo-900 leading-relaxed">
+                    {getJobXAIExplanation(studentSkills, job.requiredSkills, job.matchScore)}
+                  </p>
+                </div>
+
+                {/* Action Bar */}
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <span className="text-[11px] text-slate-400 font-medium">
                   {job.applicantsCount} Verified Applicants

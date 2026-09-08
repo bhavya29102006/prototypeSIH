@@ -14,6 +14,35 @@ import {
   Lock
 } from 'lucide-react';
 
+// Explainable AI (XAI) Candidate Evaluation Insight
+const getCandidateXAIExplanation = (candidate, jobSkills, matchScore) => {
+  const reqEntries = Object.entries(jobSkills || {});
+  const candSkills = candidate.skills || {};
+  const strong = [];
+  const deficits = [];
+
+  for (const [skill, benchmark] of reqEntries) {
+    const score = candSkills[skill] || 0;
+    if (score >= benchmark) {
+      strong.push(skill);
+    } else {
+      deficits.push({ skill, diff: benchmark - score });
+    }
+  }
+
+  deficits.sort((a, b) => b.diff - a.diff);
+
+  if (matchScore >= 75) {
+    const strongStr = strong.slice(0, 2).join(' & ');
+    const gapStr = deficits.length > 0 ? ` Minor gap in ${deficits[0].skill} (${deficits[0].diff}% below target).` : '';
+    return `Top Recommended Candidate: Exceeds benchmark thresholds in ${strongStr || 'core competencies'} with ${candidate.verifiedProjectsCount} verified project submissions.${gapStr}`;
+  } else if (matchScore >= 60) {
+    return `Viable Candidate: Solid domain understanding with ${strong.length} benchmarked skills. Has a ${deficits[0]?.diff || 15}% gap in ${deficits[0]?.skill || 'advanced modules'}, solvable via quick corporate onboarding.`;
+  } else {
+    return `Requires Bridging: Identified significant skill delta in ${deficits.slice(0, 2).map(d => d.skill).join(' & ')}. Recommended for pre-hire training track rather than direct interview.`;
+  }
+};
+
 export const TalentMatcher = () => {
   const { jobs, candidates, calculateMatchScore, notify } = useApp();
   const [selectedJobId, setSelectedJobId] = useState(jobs[0]?.id || '');
@@ -225,6 +254,17 @@ export const TalentMatcher = () => {
                         </div>
                       );
                     })}
+                  </div>
+
+                  {/* Explainable AI Candidate Match Rationale */}
+                  <div className="bg-white p-3.5 rounded-xl border border-indigo-100 shadow-xs space-y-1">
+                    <div className="flex items-center gap-1.5 font-bold text-xs text-indigo-950">
+                      <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>AI Candidate Ranking Rationale (XAI):</span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 leading-relaxed">
+                      {getCandidateXAIExplanation(candidate, activeJob.requiredSkills, candidate.matchScore)}
+                    </p>
                   </div>
 
                   <div className="flex items-center justify-between pt-2 text-xs text-slate-500">
