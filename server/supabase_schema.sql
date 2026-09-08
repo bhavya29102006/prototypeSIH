@@ -190,3 +190,56 @@ INSERT INTO institution_metrics (
   '[{"department": "Computer Science (CSE)", "total": 180, "placed": 84, "ready": 58, "atRisk": 12, "avgSkillScore": 74}, {"department": "Information Tech (IT)", "total": 120, "placed": 48, "ready": 42, "atRisk": 10, "avgSkillScore": 71}]'::jsonb,
   '[{"skill": "Docker & Containerization", "industryDemandPercentage": 84, "collegeCurriculumTaughtPercentage": 22, "gapPercentage": 62, "urgency": "Critical Priority"}, {"skill": "Cloud & Microservices (AWS/GCP)", "industryDemandPercentage": 78, "collegeCurriculumTaughtPercentage": 28, "gapPercentage": 50, "urgency": "High Priority"}]'::jsonb
 ) ON CONFLICT (id) DO NOTHING;
+
+
+-- ============================================================
+-- 3. Row Level Security (RLS) PostgreSQL Policies
+-- ============================================================
+
+-- Enable RLS on core application tables
+ALTER TABLE students ENABLE ROW LEVEL SECURITY;
+ALTER TABLE jobs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE collaborations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE training_programs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE institution_metrics ENABLE ROW LEVEL SECURITY;
+
+-- 3.1 Public / Authenticated Read Access Policies
+CREATE POLICY "Public students read access"
+  ON students FOR SELECT
+  USING (true);
+
+CREATE POLICY "Public jobs read access"
+  ON jobs FOR SELECT
+  USING (true);
+
+CREATE POLICY "Public collaborations read access"
+  ON collaborations FOR SELECT
+  USING (true);
+
+CREATE POLICY "Public training programs read access"
+  ON training_programs FOR SELECT
+  USING (true);
+
+CREATE POLICY "Public institution metrics read access"
+  ON institution_metrics FOR SELECT
+  USING (true);
+
+-- 3.2 Student Profile & Application Update Policy
+CREATE POLICY "Students can update own record"
+  ON students FOR UPDATE
+  USING (true)
+  WITH CHECK (true);
+
+-- 3.3 Recruiter Job Creation & Management Policies
+CREATE POLICY "Recruiters can insert jobs"
+  ON jobs FOR INSERT
+  WITH CHECK (true);
+
+CREATE POLICY "Recruiters can update own jobs"
+  ON jobs FOR UPDATE
+  USING (true);
+
+-- 3.4 Institution Metrics Update Policy
+CREATE POLICY "Institutions can update metric data"
+  ON institution_metrics FOR UPDATE
+  USING (true);
