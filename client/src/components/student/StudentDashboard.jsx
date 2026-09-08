@@ -8,6 +8,7 @@ import { ResumeSkillExtractor } from './ResumeSkillExtractor';
 import {
   Compass,
   FileBadge,
+  FileText,
   Sparkles,
   Briefcase,
   Layers,
@@ -18,7 +19,7 @@ import {
 
 export const StudentDashboard = () => {
   const { student, jobs } = useApp();
-  const [activeTab, setActiveTab] = useState('gap'); // 'gap' | 'quiz' | 'portfolio' | 'jobs'
+  const [activeTab, setActiveTab] = useState('gap'); // 'gap' | 'quiz' | 'resume' | 'portfolio' | 'jobs'
 
   const studentSkills = student?.skills || {};
   const studentSkillsCount = Object.keys(studentSkills).length;
@@ -99,6 +100,23 @@ export const StudentDashboard = () => {
         </button>
 
         <button
+          onClick={() => setActiveTab('resume')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+            activeTab === 'resume'
+              ? 'bg-indigo-600 text-white shadow-sm'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+          }`}
+        >
+          <FileText className="w-4 h-4" />
+          <span>AI Resume Extractor (NLP)</span>
+          <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-black uppercase ${
+            activeTab === 'resume' ? 'bg-white text-indigo-700' : 'bg-indigo-100 text-indigo-700'
+          }`}>
+            NEW
+          </span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('portfolio')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === 'portfolio'
@@ -132,7 +150,7 @@ export const StudentDashboard = () => {
         <SkillQuiz onFinished={() => setActiveTab('gap')} />
       )}
 
-            {activeTab === 'resume' && (
+      {activeTab === 'resume' && (
         <ResumeSkillExtractor onNavigateToRadar={() => setActiveTab('gap')} />
       )}
 
