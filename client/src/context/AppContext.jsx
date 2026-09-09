@@ -425,6 +425,7 @@ export const AppProvider = ({ children }) => {
       handleLogin,
       handleLogout,
       recordQuizResults,
+      syncResumeSkillsToDatabase,
       applyToJob,
       jobs,
       addJob,
