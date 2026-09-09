@@ -119,5 +119,26 @@ export const supabaseDb = {
       handleNetworkFailure('update', tableName, err);
       return null;
     }
+  },
+
+  // Delete row from table by filter
+  async delete(tableName, filterQuery) {
+    if (!isSupabaseConfigured()) return null;
+    try {
+      const url = `${SUPABASE_URL}/rest/v1/${tableName}?${filterQuery}`;
+      const res = await fetch(url, {
+        method: 'DELETE',
+        headers: getHeaders(),
+        signal: AbortSignal.timeout(4000)
+      });
+      if (!res.ok) {
+        console.warn(`Supabase DELETE warning on ${tableName}: HTTP ${res.status}`);
+        return null;
+      }
+      return true;
+    } catch (err) {
+      handleNetworkFailure('delete', tableName, err);
+      return null;
+    }
   }
 };

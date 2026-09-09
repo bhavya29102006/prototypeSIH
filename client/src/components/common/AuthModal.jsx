@@ -20,7 +20,7 @@ export const AuthModal = () => {
   const [loading, setLoading] = useState(false);
 
   // Login form state
-  const [loginEmail, setLoginEmail] = useState('aarav.sharma@nexus.edu');
+  const [loginEmail, setLoginEmail] = useState('bhavyagupta2906@gmail.com');
   const [loginPassword, setLoginPassword] = useState('demo123');
   const [loginRole, setLoginRole] = useState('student');
 
@@ -28,7 +28,7 @@ export const AuthModal = () => {
   const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('demo123');
-  const [regCollege, setRegCollege] = useState('Apex Institute of Technology');
+  const [regCollege, setRegCollege] = useState('UIET Panjab University, Chandigarh');
   const [regRole, setRegRole] = useState('Full-Stack Software Engineer');
 
   if (!isAuthModalOpen) return null;
@@ -54,21 +54,21 @@ export const AuthModal = () => {
     e.preventDefault();
     setLoading(true);
     await handleRegister({
-      name: regName || 'Bhavya Garg',
-      email: regEmail || `bhavya.${Date.now().toString().slice(-4)}@nexus.edu`,
+      name: regName || 'Bhavya Gupta',
+      email: regEmail || 'bhavyagupta2906@gmail.com',
       password: regPassword || 'demo123',
-      college: regCollege,
-      department: 'Computer Science & Engineering',
+      college: regCollege || 'UIET Panjab University, Chandigarh',
+      department: 'Electronics & Communication Engineering (ECE)',
       targetRole: regRole
     });
     setLoading(false);
   };
 
   const autoFillNewStudent = () => {
-    setRegName('Bhavya Garg');
-    setRegEmail(`bhavya.${Math.floor(100 + Math.random() * 900)}@nexus.edu`);
+    setRegName('Bhavya Gupta');
+    setRegEmail('bhavyagupta2906@gmail.com');
     setRegPassword('demo123');
-    setRegCollege('Apex Institute of Technology');
+    setRegCollege('UIET Panjab University, Chandigarh');
     setRegRole('Full-Stack Software Engineer');
   };
 
@@ -108,7 +108,7 @@ export const AuthModal = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
               <button
                 type="button"
-                onClick={() => onQuickDemoLogin('student', 'aarav.sharma@nexus.edu')}
+                onClick={() => onQuickDemoLogin('student', 'bhavyagupta2906@gmail.com')}
                 className="px-2 py-1.5 rounded-lg bg-white/10 hover:bg-indigo-600/60 border border-white/15 text-[11px] font-bold text-white transition-all text-center"
               >
                 🎓 Student

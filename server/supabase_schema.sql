@@ -89,30 +89,58 @@ CREATE TABLE IF NOT EXISTS institution_metrics (
 );
 
 -- ============================================================
--- 2. Seed Initial Realistic Records
+-- 2. Seed Initial Realistic Records (2 Students Strictly)
 -- ============================================================
 
 INSERT INTO students (
   id, name, email, avatar, college, department, batch_year, cgpa,
   portfolio_hash, last_assessment_date, readiness_score, skills,
   verified_projects, credentials, applied_jobs
-) VALUES (
+) VALUES 
+(
   'std-2024-8821',
+  'Bhavya Gupta',
+  'bhavyagupta2906@gmail.com',
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+  'UIET Panjab University, Chandigarh',
+  'Electronics & Communication Engineering (ECE)',
+  'Class of 2028 (Expected)',
+  8.8,
+  '0x9a8f...e31c-VERIFIED',
+  '2026-09-09',
+  82,
+  '{"C / C++": 84, "JavaScript / TypeScript": 92, "React.js": 94, "Tailwind CSS": 90, "HTML5 & Modern Web": 96, "Appwrite & BaaS Architecture": 92, "REST & CRUD APIs": 89, "Arduino & Embedded Systems": 96, "Power BI & Data Analytics": 88, "Vercel Cloud Deployment": 90, "Git & GitHub Workflow": 94, "Assistive Tech & Problem Solving": 92}'::jsonb,
+  '[{"id": "proj-1", "title": "MegaBlog - Full-Stack Blogging Web App", "grade": "Top 5% Production Build", "badge": "Full-Stack Verified", "techStack": ["React.js", "Appwrite", "Tailwind CSS", "Vercel"], "verifiedBy": "Nexus Skill Assessment Engine & Prof. Sharma", "liveUrl": "https://megablog-eight.vercel.app/"}, {"id": "proj-2", "title": "Ultrasonic Obstacle Detection Glasses for Visually Impaired", "grade": "Verified Hardware Innovation", "badge": "Hardware Patent Track", "techStack": ["Arduino", "C/C++", "Ultrasonic Sensors", "Embedded Systems"], "verifiedBy": "UIET Innovation & Robotics Lab"}, {"id": "proj-3", "title": "Dynamic Todo Application", "grade": "Verified Build", "badge": "Frontend Verified", "techStack": ["React.js", "JavaScript", "Tailwind CSS", "LocalStorage"], "verifiedBy": "Nexus Diagnostic Engine"}, {"id": "proj-4", "title": "Power BI Interactive Business Analytics Dashboard", "grade": "Verified Analytics", "badge": "Data Visualization", "techStack": ["Power BI", "Data Modeling", "KPI Dashboards"], "verifiedBy": "Analytics Consortium"}]'::jsonb,
+  '[{"id": "cred-1", "title": "Full Stack & BaaS Architecture Specialist", "issuer": "SkillSync Verified Consortium", "issuedDate": "August 2026", "credentialHash": "NEXUS-CERT-99214", "status": "Verified Certificate"}, {"id": "cred-2", "title": "Embedded Systems & IoT Innovation Badge", "issuer": "UIET Innovation & Robotics Center", "issuedDate": "July 2026", "credentialHash": "UIET-IOT-8812", "status": "Verified by Academic Dean"}]'::jsonb,
+  '[{"jobId": "job-1", "appliedAt": "2026-08-30", "status": "Interview Shortlisted"}]'::jsonb
+),
+(
+  'std-2024-9104',
   'Aarav Sharma',
   'aarav.sharma@nexus.edu',
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
   'Apex Institute of Technology',
-  'Computer Science & Engineering',
+  'Computer Science & Engineering (CSE)',
   '2025 (Final Year)',
   8.7,
-  '0x9a8f...e31c-VERIFIED',
+  '0x4b7c...f812-VERIFIED',
   '2026-08-28',
-  78,
-  '{"JavaScript / TypeScript": 88, "React.js": 82, "Node.js / Express": 72, "REST & GraphQL APIs": 75, "SQL & Database Design": 65, "Docker & Containerization": 38, "Cloud Architecture (AWS/GCP)": 32, "CI/CD & DevOps": 25, "System Design & Scalability": 40, "Professional Communication": 80}'::jsonb,
-  '[{"id": "proj-1", "title": "Distributed Microservices E-Commerce API", "grade": "Top 5% Submission", "badge": "Gold Code Quality", "techStack": ["Node.js", "Redis", "PostgreSQL", "Docker"], "verifiedBy": "CloudScale Technologies & Prof. Mehta"}, {"id": "proj-2", "title": "Real-time Collaborative Whiteboard", "grade": "Verified Independent Build", "badge": "Verified Architecture", "techStack": ["React", "WebSockets", "Node.js"], "verifiedBy": "Nexus Skill Assessment Engine"}]'::jsonb,
-  '[{"id": "cred-1", "title": "Full Stack Web Architecture Specialist", "issuer": "SkillSync Verified Consortium", "issuedDate": "July 2026", "status": "Tamper-Proof On-Chain Stamped"}]'::jsonb,
-  '[{"jobId": "job-1", "appliedAt": "2026-08-30", "status": "Interview Shortlisted"}]'::jsonb
-) ON CONFLICT (id) DO NOTHING;
+  76,
+  '{"Python": 80, "Docker & Containerization": 75, "Cloud Architecture (AWS/GCP)": 70, "CI/CD & DevOps": 68, "SQL & Database Design": 82, "Node.js / Express": 78, "JavaScript / TypeScript": 80, "System Design & Scalability": 65}'::jsonb,
+  '[{"id": "proj-aarav-1", "title": "Distributed Microservices E-Commerce API", "grade": "Top 5% Submission", "badge": "Gold Code Quality", "techStack": ["Node.js", "Redis", "PostgreSQL", "Docker"], "verifiedBy": "CloudScale Technologies & Prof. Mehta"}]'::jsonb,
+  '[{"id": "cred-aarav-1", "title": "Backend Architecture Specialist", "issuer": "SkillSync Verified Consortium", "issuedDate": "July 2026", "credentialHash": "NEXUS-CERT-55102", "status": "Verified Certificate"}]'::jsonb,
+  '[]'::jsonb
+)
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  email = EXCLUDED.email,
+  college = EXCLUDED.college,
+  department = EXCLUDED.department,
+  batch_year = EXCLUDED.batch_year,
+  cgpa = EXCLUDED.cgpa,
+  skills = EXCLUDED.skills,
+  verified_projects = EXCLUDED.verified_projects,
+  credentials = EXCLUDED.credentials;
 
 INSERT INTO jobs (
   id, company, logo, title, location, type, stipend, deadline,
@@ -175,10 +203,10 @@ INSERT INTO institution_metrics (
   department_breakdown, curriculum_skill_gaps
 ) VALUES (
   'inst-apex',
-  'Apex Institute of Technology',
+  'UIET Panjab University & Apex Institute',
   480,
-  '2025 (Graduating Class)',
-  64,
+  '2025 - 2028',
+  74,
   168,
   35,
   144,
@@ -187,10 +215,9 @@ INSERT INTO institution_metrics (
   25,
   48,
   10,
-  '[{"department": "Computer Science (CSE)", "total": 180, "placed": 84, "ready": 58, "atRisk": 12, "avgSkillScore": 74}, {"department": "Information Tech (IT)", "total": 120, "placed": 48, "ready": 42, "atRisk": 10, "avgSkillScore": 71}]'::jsonb,
+  '[{"department": "Electronics & Communication (ECE)", "total": 140, "placed": 68, "ready": 52, "atRisk": 8, "avgSkillScore": 82}, {"department": "Computer Science (CSE)", "total": 180, "placed": 84, "ready": 58, "atRisk": 12, "avgSkillScore": 76}]'::jsonb,
   '[{"skill": "Docker & Containerization", "industryDemandPercentage": 84, "collegeCurriculumTaughtPercentage": 22, "gapPercentage": 62, "urgency": "Critical Priority"}, {"skill": "Cloud & Microservices (AWS/GCP)", "industryDemandPercentage": 78, "collegeCurriculumTaughtPercentage": 28, "gapPercentage": 50, "urgency": "High Priority"}]'::jsonb
 ) ON CONFLICT (id) DO NOTHING;
-
 
 -- ============================================================
 -- 3. Row Level Security (RLS) PostgreSQL Policies
@@ -203,43 +230,35 @@ ALTER TABLE collaborations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE training_programs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE institution_metrics ENABLE ROW LEVEL SECURITY;
 
--- 3.1 Public / Authenticated Read Access Policies
-CREATE POLICY "Public students read access"
-  ON students FOR SELECT
-  USING (true);
+-- 3.1 Allow ALL operations on students table (SELECT, INSERT, UPDATE, DELETE)
+DROP POLICY IF EXISTS "Public students read access" ON students;
+DROP POLICY IF EXISTS "Students can update own record" ON students;
+DROP POLICY IF EXISTS "Public students all access" ON students;
 
-CREATE POLICY "Public jobs read access"
-  ON jobs FOR SELECT
-  USING (true);
-
-CREATE POLICY "Public collaborations read access"
-  ON collaborations FOR SELECT
-  USING (true);
-
-CREATE POLICY "Public training programs read access"
-  ON training_programs FOR SELECT
-  USING (true);
-
-CREATE POLICY "Public institution metrics read access"
-  ON institution_metrics FOR SELECT
-  USING (true);
-
--- 3.2 Student Profile & Application Update Policy
-CREATE POLICY "Students can update own record"
-  ON students FOR UPDATE
+CREATE POLICY "Public students all access"
+  ON students FOR ALL
   USING (true)
   WITH CHECK (true);
 
--- 3.3 Recruiter Job Creation & Management Policies
-CREATE POLICY "Recruiters can insert jobs"
-  ON jobs FOR INSERT
-  WITH CHECK (true);
+-- 3.2 Jobs Policies
+DROP POLICY IF EXISTS "Public jobs read access" ON jobs;
+DROP POLICY IF EXISTS "Recruiters can insert jobs" ON jobs;
+DROP POLICY IF EXISTS "Recruiters can update own jobs" ON jobs;
 
-CREATE POLICY "Recruiters can update own jobs"
-  ON jobs FOR UPDATE
-  USING (true);
+CREATE POLICY "Public jobs read access" ON jobs FOR SELECT USING (true);
+CREATE POLICY "Recruiters can insert jobs" ON jobs FOR INSERT WITH CHECK (true);
+CREATE POLICY "Recruiters can update own jobs" ON jobs FOR UPDATE USING (true);
 
--- 3.4 Institution Metrics Update Policy
-CREATE POLICY "Institutions can update metric data"
-  ON institution_metrics FOR UPDATE
-  USING (true);
+-- 3.3 Collaborations & Training Policies
+DROP POLICY IF EXISTS "Public collaborations read access" ON collaborations;
+CREATE POLICY "Public collaborations read access" ON collaborations FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public training programs read access" ON training_programs;
+CREATE POLICY "Public training programs read access" ON training_programs FOR SELECT USING (true);
+
+-- 3.4 Institution Metrics Policies
+DROP POLICY IF EXISTS "Public institution metrics read access" ON institution_metrics;
+DROP POLICY IF EXISTS "Institutions can update metric data" ON institution_metrics;
+
+CREATE POLICY "Public institution metrics read access" ON institution_metrics FOR SELECT USING (true);
+CREATE POLICY "Institutions can update metric data" ON institution_metrics FOR UPDATE USING (true);
