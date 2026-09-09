@@ -7,11 +7,13 @@ import {
   School,
   RotateCcw,
   Sparkles,
-  ShieldCheck
+  ShieldCheck,
+  LogIn,
+  UserCheck
 } from 'lucide-react';
 
 export const Navbar = () => {
-  const { role, setRole, student, resetAllData, isLiveBackend } = useApp();
+  const { role, setRole, student, resetAllData, isLiveBackend, setIsAuthModalOpen, currentUser } = useApp();
 
   const roleConfigs = [
     {
@@ -101,6 +103,15 @@ export const Navbar = () => {
           {/* Right Action Tools & Profile */}
           <div className="flex items-center gap-3 shrink-0">
             <button
+              onClick={() => setIsAuthModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-700 bg-indigo-50/80 hover:bg-indigo-100/90 border border-indigo-200/80 shadow-2xs transition-all hover:scale-[1.02] active:scale-[0.98]"
+              title="Authentication & Role Login Gateway"
+            >
+              <LogIn className="w-3.5 h-3.5 text-indigo-600" />
+              <span className="hidden sm:inline">Sign In / Register</span>
+            </button>
+
+            <button
               onClick={resetAllData}
               title="Reset Demo Data"
               className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg text-xs font-semibold border border-transparent hover:border-slate-200 transition-all flex items-center gap-1.5"
@@ -110,20 +121,27 @@ export const Navbar = () => {
             </button>
 
             {role === 'student' && (
-              <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                title="Account Settings & Profile Switcher"
+                className="flex items-center gap-2 pl-2 border-l border-slate-200 hover:opacity-85 transition-opacity text-left cursor-pointer"
+              >
                 <img
                   src={student.avatar}
                   alt={student.name}
                   className="w-8 h-8 rounded-full ring-2 ring-indigo-500/30 object-cover"
                 />
                 <div className="hidden xl:block text-left text-xs">
-                  <div className="font-bold text-slate-800 leading-tight">{student.name}</div>
+                  <div className="font-bold text-slate-800 leading-tight flex items-center gap-1">
+                    {student.name}
+                    <UserCheck className="w-3 h-3 text-indigo-500" />
+                  </div>
                   <div className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                     {student.readinessScore}% Ready
                   </div>
                 </div>
-              </div>
+              </button>
             )}
 
             {role === 'industry' && (

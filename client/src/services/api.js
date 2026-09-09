@@ -121,6 +121,29 @@ export const api = {
     return await res.json();
   },
 
+  // Authentication endpoints
+  async register(data) {
+    const res = await fetch(`${BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Registration failed');
+    return json;
+  },
+
+  async login(data) {
+    const res = await fetch(`${BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Login failed');
+    return json;
+  },
+
   // Reset database
   async resetDatabase() {
     const res = await fetch(`${BASE_URL}/reset`, {

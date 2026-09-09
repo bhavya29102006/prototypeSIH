@@ -6,6 +6,7 @@ import jobRoutes from './routes/jobs.js';
 import facultyRoutes from './routes/faculty.js';
 import institutionRoutes from './routes/institution.js';
 import trainingRoutes from './routes/training.js';
+import authRoutes from './routes/auth.js';
 import { dbStore } from './db/store.js';
 import { isSupabaseConfigured } from './db/supabaseClient.js';
 
@@ -48,6 +49,7 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/faculty', facultyRoutes);
 app.use('/api/institution', institutionRoutes);
 app.use('/api/training', trainingRoutes);
+app.use('/api/auth', authRoutes);
 
 // reset route to restore fresh seed data if needed during demo
 app.post('/api/reset', (req, res) => {

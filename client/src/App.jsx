@@ -3,6 +3,7 @@ import { AppProvider, useApp } from './context/AppContext';
 import { Navbar } from './components/Navbar';
 import { RoleBanner } from './components/common/RoleBanner';
 import { ToastContainer } from './components/common/ToastContainer';
+import { AuthModal } from './components/common/AuthModal';
 import { StudentDashboard } from './components/student/StudentDashboard';
 import { IndustryDashboard } from './components/industry/IndustryDashboard';
 import { FacultyDashboard } from './components/faculty/FacultyDashboard';
@@ -43,6 +44,7 @@ const MainLayout = () => {
         </div>
       </footer>
 
+      <AuthModal />
       <ToastContainer />
     </div>
   );

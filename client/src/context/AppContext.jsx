@@ -30,6 +30,15 @@ export const AppProvider = ({ children }) => {
   // Active Toast Notifications
   const [toasts, setToasts] = useState([]);
 
+  // Authenticated user state (defaulted for zero-delay demo readiness)
+  const [currentUser, setCurrentUser] = useState({
+    id: INITIAL_STUDENT.id,
+    name: INITIAL_STUDENT.name,
+    email: INITIAL_STUDENT.email,
+    role: 'student'
+  });
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   const notify = (message, type = 'success') => {
     const id = Date.now() + Math.random();
     setToasts(prev => [...prev, { id, message, type }]);
@@ -339,6 +348,50 @@ export const AppProvider = ({ children }) => {
     notify(`Corporate training track "${programData.title}" published to database!`, 'success');
   };
 
+  // Authentication handlers calling Express Backend
+  const handleRegister = async (registrationData) => {
+    try {
+      const res = await api.register(registrationData);
+      if (res && res.student) {
+        setStudent(res.student);
+        setCurrentUser(res.user);
+        setRole('student');
+        notify(`Welcome, ${res.student.name}! Account registered in backend DB.`, 'success');
+        setIsAuthModalOpen(false);
+        return { success: true, student: res.student };
+      }
+    } catch (err) {
+      notify(err.message || 'Registration failed', 'error');
+      return { success: false, error: err.message };
+    }
+  };
+
+  const handleLogin = async (loginData) => {
+    try {
+      const res = await api.login(loginData);
+      if (res && res.user) {
+        setCurrentUser(res.user);
+        if (res.student) {
+          setStudent(res.student);
+        }
+        if (res.user.role) {
+          setRole(res.user.role);
+        }
+        notify(`Logged in as ${res.user.name} (${res.user.role}) via Backend API`, 'success');
+        setIsAuthModalOpen(false);
+        return { success: true, user: res.user };
+      }
+    } catch (err) {
+      notify(err.message || 'Login failed', 'error');
+      return { success: false, error: err.message };
+    }
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    notify('Logged out of session. Switched to guest mode.', 'info');
+  };
+
   // Reset to initial state for demo testing via Backend API
   const resetAllData = async () => {
     if (isLiveBackend) {
@@ -365,6 +418,12 @@ export const AppProvider = ({ children }) => {
       setRole,
       student,
       setStudent,
+      currentUser,
+      isAuthModalOpen,
+      setIsAuthModalOpen,
+      handleRegister,
+      handleLogin,
+      handleLogout,
       recordQuizResults,
       applyToJob,
       jobs,

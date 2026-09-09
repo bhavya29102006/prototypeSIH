@@ -382,6 +382,127 @@ class Store {
     return db.institutionMetrics;
   }
 
+  // --- Authentication Methods ---
+  async registerStudent({ name, email, password, college, department, targetRole }) {
+    const db = this.read();
+    if (!db.students) db.students = [];
+
+    const existing = db.students.find(s => s.email && s.email.toLowerCase() === email.toLowerCase());
+    if (existing) {
+      return { error: 'An account with this email already exists' };
+    }
+
+    const id = `std-${Date.now().toString().slice(-6)}`;
+    const newStudent = {
+      id,
+      name: name || 'New Student',
+      email: email.toLowerCase(),
+      password: password || 'demo123',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+      college: college || 'Apex Institute of Technology',
+      department: department || 'Computer Science & Engineering',
+      batchYear: '2026',
+      cgpa: '8.4',
+      portfolioHash: `0x${Math.random().toString(16).substring(2, 8)}...${Math.random().toString(16).substring(2, 6)}-VERIFIED`,
+      lastAssessmentDate: new Date().toISOString().split('T')[0],
+      readinessScore: 68,
+      skills: {
+        'JavaScript / TypeScript': 74,
+        'React.js': 72,
+        'Node.js / Express': 66,
+        'REST & GraphQL APIs': 68,
+        'SQL & Database Design': 60,
+        'Docker & Containerization': 44,
+        'Cloud Architecture (AWS/GCP)': 38,
+        'CI/CD & DevOps': 34,
+        'System Design & Scalability': 42,
+        'Professional Communication': 76
+      },
+      verifiedProjects: [
+        {
+          id: `proj-${Date.now()}`,
+          title: `${targetRole || 'Full Stack'} Starter Application`,
+          description: 'Verified onboarding project demonstrating fundamentals and modern architecture standards.',
+          techStack: ['React', 'Node.js', 'Express', 'TailwindCSS'],
+          liveUrl: 'https://github.com/student/nexus-starter',
+          verifiedBy: 'Nexus Skill Assessment Engine',
+          verificationDate: new Date().toISOString().split('T')[0],
+          grade: 'Verified Independent Build',
+          badge: 'Verified Architecture'
+        }
+      ],
+      credentials: [
+        {
+          id: `cred-${Date.now()}`,
+          title: 'SkillSync Verified Student Credential',
+          issuer: 'SkillSync Verified Consortium',
+          issuedDate: 'August 2026',
+          credentialHash: `NEXUS-ID-${Math.floor(10000 + Math.random() * 90000)}`,
+          status: 'Active Student'
+        }
+      ],
+      appliedJobs: []
+    };
+
+    db.students.push(newStudent);
+    this.write(db);
+
+    if (isSupabaseConfigured()) {
+      try {
+        await supabaseDb.insert('students', {
+          id: newStudent.id,
+          name: newStudent.name,
+          email: newStudent.email,
+          college: newStudent.college,
+          readiness_score: newStudent.readinessScore,
+          portfolio_hash: newStudent.portfolioHash,
+          skills: newStudent.skills
+        });
+      } catch (err) {
+        console.warn('Supabase sync for new registered student skipped:', err.message);
+      }
+    }
+
+    return { student: newStudent };
+  }
+
+  async loginUser({ email, password, role = 'student' }) {
+    const db = this.read();
+    if (role === 'student') {
+      const student = db.students.find(s => s.email && s.email.toLowerCase() === email.toLowerCase());
+      if (!student) {
+        const defaultStudent = db.students[0];
+        return {
+          user: {
+            id: defaultStudent.id,
+            name: defaultStudent.name,
+            email: defaultStudent.email,
+            role: 'student'
+          },
+          student: defaultStudent
+        };
+      }
+      return {
+        user: {
+          id: student.id,
+          name: student.name,
+          email: student.email,
+          role: 'student'
+        },
+        student
+      };
+    }
+
+    return {
+      user: {
+        id: `user-${role}-demo`,
+        name: role === 'industry' ? 'TechCorp Recruiter' : role === 'faculty' ? 'Prof. Sarah Jenkins' : 'Dean Dr. R. Verma',
+        email: email || `${role}@nexus.edu`,
+        role
+      }
+    };
+  }
+
   // --- Reset Store ---
   reset() {
     this.write(SEED_DATA);
