@@ -9,7 +9,7 @@
 
 **A Unified Closed-Loop AI Platform for Academia-Industry Collaboration, Skill Mapping, and Placement Automation**
 
-[🌐 Launch Live Web App](https://skillsync-nexus.vercel.app) • [⚙️ Live API Health Check](https://skillsync-nexus-api.onrender.com/api/health) • [📄 Production Roadmap PDF](./SkillSync_Nexus_Production_Roadmap.pdf)
+[🌐 Launch Live Web App](https://skillsync-nexus.vercel.app) • [⚙️ Live API Health Check](https://skillsync-nexus-api.onrender.com/api/health) • 
 
 </div>
 
