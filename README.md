@@ -3,13 +3,14 @@
 <div align="center">
 
 [![Live Web App](https://img.shields.io/badge/Live_Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://skillsync-nexus.vercel.app)
+[![Video Walkthrough](https://img.shields.io/badge/Video_Demo-Watch_2m_HD-E11D48?style=for-the-badge&logo=quicktime)](https://skillsync-nexus.vercel.app/demo-video.mp4)
 [![Live Backend API](https://img.shields.io/badge/Backend_API-Render-46E3B7?style=for-the-badge&logo=render)](https://skillsync-nexus-api.onrender.com/api/health)
 [![Database](https://img.shields.io/badge/Database-Supabase_PostgreSQL-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com)
 [![Smart India Hackathon](https://img.shields.io/badge/SIH_2026-Problem_Statement_26044-orange?style=for-the-badge)](https://sih.gov.in)
 
 **A Unified Closed-Loop AI Platform for Academia-Industry Collaboration, Skill Mapping, and Placement Automation**
 
-[🌐 Launch Live Web App](https://skillsync-nexus.vercel.app) • [⚙️ Live API Health Check](https://skillsync-nexus-api.onrender.com/api/health) • 
+[🌐 Launch Live Web App](https://skillsync-nexus.vercel.app) • [🎬 Watch Full Prototype Video Demo](https://skillsync-nexus.vercel.app/demo-video.mp4) • [⚙️ Live API Health Check](https://skillsync-nexus-api.onrender.com/api/health)
 
 </div>
 

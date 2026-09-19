@@ -9,7 +9,8 @@ import {
   Sparkles,
   ShieldCheck,
   LogIn,
-  UserCheck
+  UserCheck,
+  Play
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -101,7 +102,18 @@ export const Navbar = () => {
           </div>
 
           {/* Right Action Tools & Profile */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <a
+              href="/demo-video.mp4"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/80 shadow-2xs transition-all hover:scale-[1.02] active:scale-[0.98]"
+              title="Watch Full Prototype Video Demo"
+            >
+              <Play className="w-3.5 h-3.5 text-rose-600 fill-rose-600" />
+              <span className="hidden sm:inline">Watch Demo</span>
+            </a>
+
             <button
               onClick={() => setIsAuthModalOpen(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-700 bg-indigo-50/80 hover:bg-indigo-100/90 border border-indigo-200/80 shadow-2xs transition-all hover:scale-[1.02] active:scale-[0.98]"
